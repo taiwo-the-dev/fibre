@@ -8,20 +8,28 @@ const Welcome = ({ nextStep, updateData, personalData }: any) => {
   const [isFormValid, setIsFormValid] = useState(false); 
   const [fibre, setFibre] = useState('0');
 
-  // 🔥 Update fibre value based on personalData.age
   useEffect(() => {
-    if (!personalData.age) {
+    if (!personalData.age || !personalData.gender) {
       setFibre('0');
       return;
     }
-    
+  
     const age = Number(personalData.age);
-    if (age >= 2 && age < 5) setFibre('15');
-    else if (age >= 5 && age < 11) setFibre('20');
-    else if (age >= 11 && age < 17) setFibre('25');
-    else if (age >= 17) setFibre('30');
-    else setFibre('0'); // Default case
-  }, [personalData.age]);
+    const gender = personalData.gender.toLowerCase();
+  
+    let recommendedFibre = 0;
+  
+    if (age >= 1 && age <= 3) recommendedFibre = 19;
+    else if (age >= 4 && age <= 8) recommendedFibre = 25;
+    else if (age >= 9 && age <= 13) recommendedFibre = gender === 'male' ? 31 : 26;
+    else if (age >= 14 && age <= 18) recommendedFibre = gender === 'male' ? 38 : 26;
+    else if (age >= 19 && age <= 30) recommendedFibre = gender === 'male' ? 38 : 25;
+    else if (age >= 31 && age <= 50) recommendedFibre = gender === 'male' ? 38 : 25;
+    else if (age >= 51) recommendedFibre = gender === 'male' ? 30 : 21;
+  
+    setFibre(recommendedFibre.toString());
+  }, [personalData.age, personalData.gender]);
+  
 
   return (
     <>
