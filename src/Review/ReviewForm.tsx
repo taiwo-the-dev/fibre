@@ -2,6 +2,7 @@ import { Formik, Form, Field } from 'formik';
 import MultiSelect from '../components/MultiSelect';
 import { foodList, popularFoodList } from './foodList';
 import { useState } from 'react';
+import Result from './Result';
 
 const mealOptions = [
   { label: 'Breakfast', value: 'breakfast' },
@@ -27,10 +28,10 @@ interface MealFormProps {
   data: ExcelRow[];
   updateMealData: (values: Partial<FormValues>) => void;
   mealData: FormValues;
+  disabled: boolean;
 }
 
-const MealForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData }) => {
-  const [visibleCount, setVisibleCount] = useState(5);
+const ReviewForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData, disabled }) => {
 
   return (
     <Formik<FormValues>
@@ -38,26 +39,8 @@ const MealForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData }) =
       onSubmit={(values) => updateMealData(values)}
     >
       {({ values, setFieldValue }) => {
-        // ✅ Ensure selected values are arrays
-        const filteredData = data
-          .filter((item) => {
-            const itemName = item['Food name in English'].toLowerCase();
-            return values.mealContent.some((food) => itemName.includes(food.toLowerCase()));
-          })
-          .slice(0, visibleCount);
-
-        // ✅ Handles adding/removing selected food items
-        const handlePickListClick = (foodName: string) => {
-          const updatedYourMeal = values.yourMeal.includes(foodName)
-            ? values.yourMeal.filter((item) => item !== foodName)
-            : [...values.yourMeal, foodName];
-
-          setFieldValue('yourMeal', updatedYourMeal);
-          updateMealData({ ...values, yourMeal: updatedYourMeal });
-        };
-
         return (
-          <Form className='space-y-6 w-full lg:w-[80%]'>
+          <Form className='space-y-6 w-[80%]'>
             {/* Meal Selection */}
             <div>
               <label htmlFor='meal' className='block mb-3'>
@@ -77,6 +60,7 @@ const MealForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData }) =
                     }}
                     isMulti={false}
                     placeholder='Select a meal...'
+                    disabled={disabled}
                   />
                 )}
               </Field>
@@ -101,43 +85,12 @@ const MealForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData }) =
                     }}
                     isMulti
                     placeholder='Select meal contents...'
+                    disabled={disabled}
                   />
                 )}
               </Field>
             </div>
-
-            {/* Display Selected Foods */}
-            {filteredData.length > 0 ? (
-              <div className='bg-[#F2F6FF] p-4'>
-                {filteredData.map((item, index) => (
-                  <div
-                    key={index}
-                    onClick={() => handlePickListClick(item['Food name in English'])}
-                    className={`cursor-pointer p-2 pb-4 border-b border-[#cccccc] ${
-                      values.yourMeal.includes(item['Food name in English']) ? 'bg-[#FFEFED]' : 'bg-transparent'
-                    }`}
-                  >
-                    <h3 className='text-lg'>{item['Food name in English']}</h3>
-                    <p className='text-[#667185]'>80 Calories | Serving: 1 Each</p>
-                  </div>
-                ))}
-
-                {/* Load More Button */}
-                <div className='w-full flex justify-center'>
-                  {filteredData.length >= visibleCount && (
-                    <button
-                      onClick={() => setVisibleCount((prev) => prev + 5)}
-                      className='mt-4 px-4 py-2 bg-[#FF6347] text-white rounded-lg'
-                      type='button'
-                    >
-                      Load more +
-                    </button>
-                  )}
-                </div>
-              </div>
-            ) : (
-              <p className='text-gray-500'>No matching items found.</p>
-            )}
+           
           </Form>
         );
       }}
@@ -145,4 +98,4 @@ const MealForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData }) =
   );
 };
 
-export default MealForm;
+export default ReviewForm;

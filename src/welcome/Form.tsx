@@ -1,25 +1,41 @@
+import { useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import Input from '../components/Input';
 
-const Form = () => {
+const Form = ({ updateData, personalData, setIsValid }: any) => {
   const formik = useFormik({
     initialValues: {
-      name: '',
-      age: '',
-      gender: '',
+      name: personalData.name || '',
+      age: personalData.age === 0 ? '' : personalData.age.toString(),
+      gender: personalData.gender || '',
     },
     validationSchema: Yup.object({
       name: Yup.string().required('Name is required'),
       age: Yup.number()
+        .typeError('Age must be a number')
         .required('Age is required')
         .min(1, 'Age must be at least 1'),
       gender: Yup.string().required('Gender is required'),
     }),
     onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+      updateData({ ...values, age: Number(values.age) });
     },
+    validateOnMount: true,
   });
+
+  useEffect(() => {
+    setIsValid(formik.isValid);
+  }, [formik.isValid]);
+
+  // 🔥 Fix: Update personalData whenever form values change
+  useEffect(() => {
+    updateData({
+      name: formik.values.name,
+      age: formik.values.age ? Number(formik.values.age) : '',
+      gender: formik.values.gender,
+    });
+  }, [formik.values]);
 
   return (
     <form onSubmit={formik.handleSubmit} className='space-y-4'>
@@ -29,16 +45,29 @@ const Form = () => {
         value={formik.values.name}
         onChange={formik.handleChange}
         onBlur={formik.handleBlur}
-        error={formik.touched.name ? formik.errors.name : ''}
+        error={
+          formik.touched.name && typeof formik.errors.name === 'string'
+            ? formik.errors.name
+            : undefined
+        }
       />
       <Input
         label='Age'
         name='age'
         type='number'
         value={formik.values.age}
-        onChange={formik.handleChange}
-        onBlur={formik.handleBlur}
-        error={formik.touched.age ? formik.errors.age : ''}
+        onChange={(e) => {
+          const value = e.target.value;
+          formik.setFieldValue('age', value === '' ? '' : Number(value));
+        }}
+        onBlur={(e) =>
+          formik.handleBlur(e as React.FocusEvent<HTMLInputElement>)
+        }
+        error={
+          formik.touched.age && typeof formik.errors.age === 'string'
+            ? formik.errors.age
+            : undefined
+        }
       />
       <div>
         <label className='block text-sm font-medium text-gray-700'>
@@ -86,7 +115,7 @@ const Form = () => {
           </button>
           <span className='text-gray-700'>Female</span>
         </div>
-        {formik.touched.gender && formik.errors.gender && (
+        {formik.touched.gender && typeof formik.errors.gender === 'string' && (
           <p className='text-red-500 text-sm mt-1'>{formik.errors.gender}</p>
         )}
       </div>

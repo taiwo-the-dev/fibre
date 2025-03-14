@@ -15,6 +15,7 @@ interface MultiSelectProps {
   isMulti?: boolean;
   placeholder?: string;
   quickLabel?: string;
+  disabled?: boolean;
 }
 
 const MultiSelect: React.FC<MultiSelectProps> = ({
@@ -25,12 +26,14 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   isMulti = false,
   placeholder = 'Select an option...',
   quickLabel,
+  disabled = false,
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
-  // Handle selection toggle (Ensuring Type Safety)
   const toggleSelection = (value: string): void => {
+    if (disabled) return; // Prevent selection if disabled
+
     if (isMulti) {
       const selectedArray: string[] = Array.isArray(selectedValue)
         ? selectedValue
@@ -41,12 +44,13 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
       onChange(newSelection);
     } else {
       onChange(value);
-      setIsDropdownOpen(false); // Close dropdown for single select
+      setIsDropdownOpen(false);
     }
   };
 
-  // Remove selected option (for multi-select)
   const removeSelection = (value: string): void => {
+    if (disabled) return; // Prevent removal if disabled
+
     if (isMulti) {
       const selectedArray: string[] = Array.isArray(selectedValue)
         ? selectedValue
@@ -55,7 +59,6 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     }
   };
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent): void => {
       if (
@@ -73,26 +76,34 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   return (
     <div className='w-full relative'>
       <div
-        className='border border-[#0000001A] rounded-lg p-4 flex justify-between items-center cursor-pointer'
-        onClick={() => setIsDropdownOpen(!isDropdownOpen)}>
+        className={`border border-[#0000001A] rounded-lg p-4 flex justify-between items-center ${
+          disabled ? 'cursor-not-allowed bg-gray-100' : 'cursor-pointer'
+        }`}
+        onClick={() => !disabled && setIsDropdownOpen(!isDropdownOpen)}
+      >
         <div className='flex flex-wrap gap-3'>
           {Array.isArray(selectedValue) && selectedValue.length > 0 ? (
             selectedValue.map((value: string) => (
               <span
                 key={value}
-                className='flex items-center bg-[#FFEFED] p-2 rounded-md text-sm'>
+                className={`flex items-center p-2 rounded-md text-sm ${
+                  disabled ? 'bg-gray-300 text-gray-500' : 'bg-[#FFEFED]'
+                }`}
+              >
                 {options.find((o) => o.value === value)?.label}
-                <IoClose
-                  className='ml-1.5 text-xl cursor-pointer hover:text-red-500'
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    removeSelection(value);
-                  }}
-                />
+                {!disabled && (
+                  <IoClose
+                    className='ml-1.5 text-xl cursor-pointer hover:text-red-500'
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeSelection(value);
+                    }}
+                  />
+                )}
               </span>
             ))
           ) : selectedValue ? (
-            <span className='text-black'>
+            <span className={`text-black ${disabled ? 'text-gray-500' : ''}`}>
               {options.find((o) => o.value === selectedValue)?.label}
             </span>
           ) : (
@@ -102,10 +113,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
         <BiChevronDown className='w-6 h-6' />
       </div>
 
-      {isDropdownOpen && (
+      {isDropdownOpen && !disabled && (
         <div
           className='absolute mt-1 w-full border border-[#0000001A] rounded-md bg-white shadow-md z-10'
-          ref={dropdownRef}>
+          ref={dropdownRef}
+        >
           {options.map((option: Option) => (
             <div
               key={option.value}
@@ -113,30 +125,36 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
                 (Array.isArray(selectedValue) &&
                   selectedValue.includes(option.value)) ||
                 selectedValue === option.value
-                  ? 'bg-[#FFEFED}'
+                  ? 'bg-[#FFEFED]'
                   : ''
               }`}
-              onClick={() => toggleSelection(option.value)}>
+              onClick={() => toggleSelection(option.value)}
+            >
               {option.label}
             </div>
           ))}
         </div>
       )}
+
       <div className='mt-4'>
-        <p className='mb-2'>{quickLabel}</p>
-        {/* Popular Options */}
+        {quickLabel && <p className='mb-2'>{quickLabel}</p>}
+
         <div className='flex flex-wrap gap-4'>
           {popularOptions.map((option: string) => (
             <button
               key={option}
-              className={`p-3 rounded-md border border-[#0000001A] cursor-pointer ${
-                (Array.isArray(selectedValue) &&
-                  selectedValue.includes(option)) ||
-                selectedValue === option
+              className={`p-3 rounded-md border border-[#0000001A] ${
+                disabled
+                  ? 'bg-gray-200 text-gray-500 cursor-not-allowed'
+                  : (Array.isArray(selectedValue) &&
+                      selectedValue.includes(option)) ||
+                    selectedValue === option
                   ? 'bg-[#FFEFED] text-black'
                   : 'bg-[#F7F7F7] text-black hover:bg-[#FFEFED]'
               }`}
-              onClick={() => toggleSelection(option)}>
+              onClick={() => toggleSelection(option)}
+              disabled={disabled}
+            >
               {options.find((o) => o.value === option)?.label}
             </button>
           ))}

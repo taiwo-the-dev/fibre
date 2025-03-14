@@ -1,22 +1,29 @@
 import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import Section from '../components/Section';
-import MealForm from './MealForm';
 import Button from '../components/Button';
+import Result from './Result';
+import ReviewForm from './ReviewForm';
 
 interface ExcelRow {
-  "Food name in English": string;
+  'Food name in English': string;
   Fibre?: number;
 }
 
-const Meal = ({ nextStep, updateMealData, mealData }: any) => {
+const ReviewMeal = ({
+  nextStep,
+  prevStep,
+  updateMealData,
+  mealData,
+  disabled,
+}: any) => {
   const [allData, setAllData] = useState<ExcelRow[]>([]);
   const [isMealValid, setIsMealValid] = useState(false);
 
   useEffect(() => {
     const fetchExcelData = async () => {
       try {
-        const response = await fetch("/data.xlsx");
+        const response = await fetch('/data.xlsx');
         const file = await response.blob();
         const reader = new FileReader();
 
@@ -24,7 +31,7 @@ const Meal = ({ nextStep, updateMealData, mealData }: any) => {
           if (!e.target?.result) return;
 
           const data = new Uint8Array(e.target.result as ArrayBuffer);
-          const workbook = XLSX.read(data, { type: "array" });
+          const workbook = XLSX.read(data, { type: 'array' });
           const sheetName = workbook.SheetNames[0];
           const sheet = workbook.Sheets[sheetName];
 
@@ -34,7 +41,7 @@ const Meal = ({ nextStep, updateMealData, mealData }: any) => {
 
         reader.readAsArrayBuffer(file);
       } catch (error) {
-        console.error("Error loading Excel file:", error);
+        console.error('Error loading Excel file:', error);
       }
     };
 
@@ -53,15 +60,27 @@ const Meal = ({ nextStep, updateMealData, mealData }: any) => {
         </div>
 
         <div className='flex flex-col gap-y-3 mt-8'>
-          <MealForm data={allData} mealData={mealData} updateMealData={updateMealData} />
+          <ReviewForm
+            data={allData}
+            mealData={mealData}
+            updateMealData={updateMealData}
+            disabled={disabled}
+          />
         </div>
+        <h1 className='text-2xl my-8'>Your Food</h1>
+        <Result yourMeal={mealData.yourMeal} updateMealData={updateMealData} />
       </Section>
 
-      <div className='w-full flex justify-center mt-8'>
-        <Button onClick={nextStep} disabled={!isMealValid}>Next</Button>
+      <div className='w-full lg:w-1/2 mx-auto flex justify-between mt-8'>
+        <Button onClick={prevStep} disabled={!isMealValid}>
+          Edit
+        </Button>
+        <Button onClick={nextStep} disabled={!isMealValid}>
+          Calculate
+        </Button>
       </div>
     </>
   );
 };
 
-export default Meal;
+export default ReviewMeal;

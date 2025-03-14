@@ -2,10 +2,12 @@ import Section from './components/Section';
 import info from './assets/info.svg';
 import share from './assets/share.svg';
 
-const Result = () => {
+const Result = ({ personalData, mealData }: any) => {
+  console.log('Personal Data:', personalData);
+  console.log('Meal Data:', mealData);
+
   return (
     <>
-      {' '}
       <Section className='py-16'>
         <div className='flex justify-start items-center gap-x-1.5 mb-6'>
           <p className='text-xl'>Recommended Daily Fiber Intake</p>
@@ -25,12 +27,12 @@ const Result = () => {
       </Section>
       <Section className=' w-[80%] flex gap-x-12 items-center justify-center'>
         <div className='flex items-center justify-between gap-x-3 cursor-pointer'>
-            <img src={share} alt="share" className='w-8 h-8 p-2 rounded-full bg-[#FF6347]' />
-            <p className='text-2xl'>Share result</p>
+          <img src={share} alt='share' className='w-8 h-8 p-2 rounded-full bg-[#FF6347]' />
+          <p className='text-2xl'>Share result</p>
         </div>
         <div className='flex items-center justify-between gap-x-3'>
-            <img src={share} alt="share" className='w-8 h-8 p-2 rounded-full bg-[#FF6347]'/>
-            <p className='text-2xl'>Reload counter</p>
+          <img src={share} alt='share' className='w-8 h-8 p-2 rounded-full bg-[#FF6347]' />
+          <p className='text-2xl'>Reload counter</p>
         </div>
       </Section>
     </>
