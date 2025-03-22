@@ -5,7 +5,6 @@ import Welcome from './welcome/Welcome';
 import Result from './Result';
 import ReviewMeal from './Review/ReviewMeal';
 
-
 interface PersonalData {
   name: string;
   age: string;
@@ -20,7 +19,7 @@ interface MealData {
 
 function App() {
   const [step, setStep] = useState(1);
-  const [disabled, seDisabled] = useState(true);
+  const [disabled, setDisabled] = useState(true);
   const [personalData, setFormData] = useState<PersonalData>({
     name: '',
     gender: '',
@@ -31,6 +30,8 @@ function App() {
     mealContent: [],
     yourMeal: [],
   });
+  const [fibre, setFibre] = useState('0');
+  const [totalFibre, setTotalFibre] = useState('0');
 
   const nextStep = () => setStep((prev) => prev + 1);
   const prevStep = () => setStep((prev) => prev - 1);
@@ -46,12 +47,12 @@ function App() {
   return (
     <div>
       <Header />
-      {step === 1 && <Welcome nextStep={nextStep} updateData={updatePersonalData} personalData={personalData} />}
-      {step === 2 && <Meal nextStep={nextStep} updateMealData={updateMealData} mealData={mealData} />}
+      {step === 1 && <Welcome nextStep={nextStep} updateData={updatePersonalData} personalData={personalData} fibre={fibre} setFibre={setFibre} />}
+      {step === 2 && <Meal nextStep={nextStep} updateMealData={updateMealData} mealData={mealData} setTotalFibre={setTotalFibre} />}
       {step === 3 && <ReviewMeal nextStep={nextStep} updateMealData={updateMealData} mealData={mealData} disabled={disabled} prevStep={prevStep} />}
-      {step === 4 && <Result personalData={personalData} mealData={mealData} />}
+      {step === 4 && <Result personalData={personalData} mealData={mealData} totalFibre={totalFibre} fibre={fibre} />}
     </div>
-  )
+  );
 }
 
 export default App;

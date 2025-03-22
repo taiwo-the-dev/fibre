@@ -4,21 +4,34 @@ import Section from '../components/Section';
 import Form from './Form';
 import Result from './Result';
 
-const Welcome = ({ nextStep, updateData, personalData }: any) => {
-  const [isFormValid, setIsFormValid] = useState(false); 
-  const [fibre, setFibre] = useState('0');
+interface PersonalData {
+  name: string;
+  age: string;
+  gender: string;
+}
+
+interface WelcomeProps {
+  nextStep: () => void;
+  updateData: (values: Partial<PersonalData>) => void;
+  personalData: PersonalData;
+  fibre: string;
+  setFibre: (value: string) => void;
+}
+
+const Welcome: React.FC<WelcomeProps> = ({ nextStep, updateData, personalData, fibre, setFibre }) => {
+  const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
     if (!personalData.age || !personalData.gender) {
       setFibre('0');
       return;
     }
-  
+
     const age = Number(personalData.age);
     const gender = personalData.gender.toLowerCase();
-  
+
     let recommendedFibre = 0;
-  
+
     if (age >= 1 && age <= 3) recommendedFibre = 19;
     else if (age >= 4 && age <= 8) recommendedFibre = 25;
     else if (age >= 9 && age <= 13) recommendedFibre = gender === 'male' ? 31 : 26;
@@ -26,10 +39,9 @@ const Welcome = ({ nextStep, updateData, personalData }: any) => {
     else if (age >= 19 && age <= 30) recommendedFibre = gender === 'male' ? 38 : 25;
     else if (age >= 31 && age <= 50) recommendedFibre = gender === 'male' ? 38 : 25;
     else if (age >= 51) recommendedFibre = gender === 'male' ? 30 : 21;
-  
+
     setFibre(recommendedFibre.toString());
-  }, [personalData.age, personalData.gender]);
-  
+  }, [personalData.age, personalData.gender, setFibre]);
 
   return (
     <>
@@ -43,8 +55,7 @@ const Welcome = ({ nextStep, updateData, personalData }: any) => {
           <Form updateData={updateData} personalData={personalData} setIsValid={setIsFormValid} />
         </div>
       </Section>
-      
-      {/* 🔥 Pass the updated fibre value to Result */}
+
       <div>
         <Result fibre={fibre} />
       </div>

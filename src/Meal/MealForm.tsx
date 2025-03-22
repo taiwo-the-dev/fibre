@@ -14,7 +14,7 @@ const popularMeals = ['breakfast', 'lunch', 'dinner', 'snacks'];
 
 interface ExcelRow {
   "Food name in English": string;
-  Fibre?: number;
+  "Fibre (g)": number;
 }
 
 interface FormValues {
@@ -27,9 +27,10 @@ interface MealFormProps {
   data: ExcelRow[];
   updateMealData: (values: Partial<FormValues>) => void;
   mealData: FormValues;
+  setTotalFibre: (value: string) => void;
 }
 
-const MealForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData }) => {
+const MealForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData, setTotalFibre }) => {
   const [visibleCount, setVisibleCount] = useState(5);
 
   return (
@@ -51,10 +52,17 @@ const MealForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData }) =
           const updatedYourMeal = values.yourMeal.includes(foodName)
             ? values.yourMeal.filter((item) => item !== foodName)
             : [...values.yourMeal, foodName];
-
+        
+          // Calculate total fiber from selected food items
+          const totalFibre = data
+            .filter((item) => updatedYourMeal.includes(item['Food name in English']))
+            .reduce((sum, item) => sum + item['Fibre (g)'], 0);
+        
           setFieldValue('yourMeal', updatedYourMeal);
           updateMealData({ ...values, yourMeal: updatedYourMeal });
+          setTotalFibre(totalFibre.toFixed(1)); // Update fiber state
         };
+        
 
         return (
           <Form className='space-y-6 w-full lg:w-[80%]'>

@@ -32,7 +32,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   const dropdownRef = useRef<HTMLDivElement | null>(null);
 
   const toggleSelection = (value: string): void => {
-    if (disabled) return; // Prevent selection if disabled
+    if (disabled) return;
 
     if (isMulti) {
       const selectedArray: string[] = Array.isArray(selectedValue)
@@ -49,7 +49,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   };
 
   const removeSelection = (value: string): void => {
-    if (disabled) return; // Prevent removal if disabled
+    if (disabled) return;
 
     if (isMulti) {
       const selectedArray: string[] = Array.isArray(selectedValue)
@@ -115,7 +115,7 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 
       {isDropdownOpen && !disabled && (
         <div
-          className='absolute mt-1 w-full border border-[#0000001A] rounded-md bg-white shadow-md z-10'
+          className='absolute mt-1 w-full border border-[#0000001A] rounded-md bg-white shadow-md z-10 max-h-60 overflow-y-auto'
           ref={dropdownRef}
         >
           {options.map((option: Option) => (

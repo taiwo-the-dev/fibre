@@ -6,10 +6,10 @@ import Button from '../components/Button';
 
 interface ExcelRow {
   "Food name in English": string;
-  Fibre?: number;
+  "Fibre (g)": number;
 }
 
-const Meal = ({ nextStep, updateMealData, mealData }: any) => {
+const Meal = ({ nextStep, updateMealData, mealData, setTotalFibre }: any) => {
   const [allData, setAllData] = useState<ExcelRow[]>([]);
   const [isMealValid, setIsMealValid] = useState(false);
 
@@ -30,7 +30,7 @@ const Meal = ({ nextStep, updateMealData, mealData }: any) => {
 
           const parsedData: ExcelRow[] = XLSX.utils.sheet_to_json(sheet);
           setAllData(parsedData);
-        };
+        };  
 
         reader.readAsArrayBuffer(file);
       } catch (error) {
@@ -45,6 +45,7 @@ const Meal = ({ nextStep, updateMealData, mealData }: any) => {
     setIsMealValid(!!mealData.meal && mealData.yourMeal.length > 0);
   }, [mealData]);
 
+  console.log(allData);
   return (
     <>
       <Section>
@@ -53,7 +54,7 @@ const Meal = ({ nextStep, updateMealData, mealData }: any) => {
         </div>
 
         <div className='flex flex-col gap-y-3 mt-8'>
-          <MealForm data={allData} mealData={mealData} updateMealData={updateMealData} />
+          <MealForm data={allData} mealData={mealData} updateMealData={updateMealData} setTotalFibre={setTotalFibre}/>
         </div>
       </Section>
 
