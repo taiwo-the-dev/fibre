@@ -53,8 +53,8 @@ const Result: React.FC<ResultProps> = ({ personalData, mealData, totalFibre, fib
         </div>
 
         <div className="w-full flex items-center justify-center bg-[#FFEFED] p-16 rounded-lg mt-3">
-          <h1 className="text-4xl lg:text-8xl font-bold bg-white border-14 lg:border-24 border-[#FF6347] rounded-full h-50 w-50 lg:h-100 lg:w-100 flex flex-col items-center justify-center text-center gap-y-1.5">
-            {totalFibre}g <br /> <span className="text-2xl lg:text-5xl font-normal">of {fibre}g</span>
+          <h1 className="text-3xl lg:text-8xl font-bold bg-white border-14 lg:border-24 border-[#FF6347] rounded-full h-50 w-50 lg:h-100 lg:w-100 flex flex-col items-center justify-center text-center gap-y-1.5">
+            {totalFibre}g <br /> <span className="text-lg lg:text-5xl font-normal">of {fibre}g</span>
           </h1>
         </div>
 
