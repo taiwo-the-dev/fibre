@@ -1,8 +1,6 @@
 import { Formik, Form, Field } from 'formik';
 import MultiSelect from '../components/MultiSelect';
 import { foodList, popularFoodList } from './foodList';
-import { useState } from 'react';
-import Result from './Result';
 
 const mealOptions = [
   { label: 'Breakfast', value: 'breakfast' },
@@ -40,7 +38,7 @@ const ReviewForm: React.FC<MealFormProps> = ({ data, mealData, updateMealData, d
     >
       {({ values, setFieldValue }) => {
         return (
-          <Form className='space-y-6 w-[80%]'>
+          <Form className='space-y-6 w-full lg:w-[80%]'>
             {/* Meal Selection */}
             <div>
               <label htmlFor='meal' className='block mb-3'>

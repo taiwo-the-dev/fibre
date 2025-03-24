@@ -12,7 +12,7 @@ interface ExcelRow {
 
 const ReviewMeal = ({
   nextStep,
-  prevStep,
+  previousStep,
   updateMealData,
   mealData,
   disabled,
@@ -71,12 +71,15 @@ const ReviewMeal = ({
         <Result yourMeal={mealData.yourMeal} updateMealData={updateMealData} />
       </Section>
 
-      <div className='w-full lg:w-1/2 mx-auto flex justify-between mt-8'>
-        <Button onClick={prevStep} disabled={!isMealValid}>
-          Edit
+      <div className='w-full flex gap-x-4 justify-center mt-8'>
+        <Button
+          onClick={previousStep}
+          disabled={!isMealValid}
+          className='bg-[#F7F7F7] border border-[#8E98A8] text-black'>
+          Previous
         </Button>
         <Button onClick={nextStep} disabled={!isMealValid}>
-          Calculate
+          Next
         </Button>
       </div>
     </>

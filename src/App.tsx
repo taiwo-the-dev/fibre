@@ -4,6 +4,9 @@ import Meal from './Meal/Meal';
 import Welcome from './welcome/Welcome';
 import Result from './Result';
 import ReviewMeal from './Review/ReviewMeal';
+import Footer from './components/Footer';
+
+import spiral from './assets/spiral.svg';
 
 interface PersonalData {
   name: string;
@@ -45,12 +48,51 @@ function App() {
   };
 
   return (
-    <div>
+    <div className='flex flex-col min-h-screen relative'>
+
+      
       <Header />
-      {step === 1 && <Welcome nextStep={nextStep} updateData={updatePersonalData} personalData={personalData} fibre={fibre} setFibre={setFibre} />}
-      {step === 2 && <Meal nextStep={nextStep} updateMealData={updateMealData} mealData={mealData} setTotalFibre={setTotalFibre} />}
-      {step === 3 && <ReviewMeal nextStep={nextStep} updateMealData={updateMealData} mealData={mealData} disabled={disabled} prevStep={prevStep} />}
-      {step === 4 && <Result personalData={personalData} mealData={mealData} totalFibre={totalFibre} fibre={fibre} />}
+      <main className='flex-grow relative z-10'>
+        {step === 1 && (
+          <Welcome
+            nextStep={nextStep}
+            updateData={updatePersonalData}
+            personalData={personalData}
+            fibre={fibre}
+            setFibre={setFibre}
+          />
+        )}
+        {step === 2 && (
+          <Meal
+            nextStep={nextStep}
+            PreviousStep={prevStep}
+            updateMealData={updateMealData}
+            mealData={mealData}
+            setTotalFibre={setTotalFibre}
+          />
+        )}
+        {step === 3 && (
+          <ReviewMeal
+            nextStep={nextStep}
+            updateMealData={updateMealData}
+            mealData={mealData}
+            disabled={disabled}
+            previousStep={prevStep}
+          />
+        )}
+        {step === 4 && (
+          <Result
+            personalData={personalData}
+            mealData={mealData}
+            totalFibre={totalFibre}
+            fibre={fibre}
+          />
+        )}
+      </main>
+      <div className='absolute bottom-0 right-0'>
+        <img src={spiral} alt="spiral" />
+      </div>
+      <Footer />
     </div>
   );
 }

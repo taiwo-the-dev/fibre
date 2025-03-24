@@ -1,4 +1,5 @@
 import React from 'react';
+import clsx from 'clsx';
 
 interface ButtonProps {
   type?: 'button' | 'submit' | 'reset';
@@ -20,7 +21,10 @@ const Button: React.FC<ButtonProps> = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`px-10 py-3 rounded-lg bg-[#FF6347] cursor-pointer text-white text-2xl transition-opacity disabled:opacity-50 ${className}`}
+      className={clsx(
+        'px-10 py-3 rounded-lg text-2xl transition-opacity disabled:opacity-50 font-semibold',
+        className || 'bg-[#FF6347] text-white ' // Default bg if no className is provided
+      )}
     >
       {children}
     </button>

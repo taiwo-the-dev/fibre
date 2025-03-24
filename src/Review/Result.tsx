@@ -12,7 +12,7 @@ const Result: React.FC<ResultProps> = ({ yourMeal, updateMealData }) => {
   };
 
   return (
-    <div className='w-[80%] flex flex-col gap-y-3'>
+    <div className='w-full lg:w-[80%] flex flex-col gap-y-3'>
       {yourMeal.map((food, index) => (
         <div key={index} className='w-full flex items-center gap-x-3 justify-between'>
           <div className='w-full bg-[#FFEFED] p-4'>

@@ -30,6 +30,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLDivElement | null>(null);
+
+  const toggleDropdown = () => {
+    setIsDropdownOpen((prev) => !prev);
+  };
 
   const toggleSelection = (value: string): void => {
     if (disabled) return;
@@ -63,7 +68,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
     const handleClickOutside = (event: MouseEvent): void => {
       if (
         dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
+        !dropdownRef.current.contains(event.target as Node) &&
+        buttonRef.current &&
+        !buttonRef.current.contains(event.target as Node)
       ) {
         setIsDropdownOpen(false);
       }
@@ -76,10 +83,11 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
   return (
     <div className='w-full relative'>
       <div
+        ref={buttonRef}
         className={`border border-[#0000001A] rounded-lg p-4 flex justify-between items-center ${
           disabled ? 'cursor-not-allowed bg-gray-100' : 'cursor-pointer'
         }`}
-        onClick={() => !disabled && setIsDropdownOpen(!isDropdownOpen)}
+        onClick={() => !disabled && toggleDropdown()}
       >
         <div className='flex flex-wrap gap-3'>
           {Array.isArray(selectedValue) && selectedValue.length > 0 ? (
@@ -110,7 +118,9 @@ const MultiSelect: React.FC<MultiSelectProps> = ({
             <span className='text-gray-400'>{placeholder}</span>
           )}
         </div>
-        <BiChevronDown className='w-6 h-6' />
+        <BiChevronDown
+          className={`w-6 h-6 transition-transform ${isDropdownOpen ? 'rotate-180' : ''}`}
+        />
       </div>
 
       {isDropdownOpen && !disabled && (
